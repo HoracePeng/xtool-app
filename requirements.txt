@@ -1,4 +1,7 @@
-pyqt5 == 5.15.4
-pyqt5-tools == 5.15.4.3.2
-PySide2 == 5.15.2
-PyQt5-stubs == 5.15.2
+pyqt5
+pyqt5-tools
+PySide2
+PyQt5-stubs
+PyAutoGUI
+pyperclip
+opencv-python
