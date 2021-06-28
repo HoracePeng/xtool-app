@@ -112,7 +112,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
             self.phoneTable.setItem(row, 2, state_item)
 
             # 间隔指定秒数
-            time.sleep(self.delayTimeBox.Value())
+            time.sleep(self.delayTimeBox.value())
 
         QMessageBox.information(self, "信息", "完成添加任务")
 
@@ -126,7 +126,8 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         if not input_tel_icon:
             raise RuntimeError("未找到输入栏")
         pyautogui.click(input_tel_icon)
-        pyautogui.typewrite(phone, interval=0.25)
+        pyautogui.typewrite(phone, interval=0.05)
+        pyautogui.keyDown('enter')
         time.sleep(1)
         # 查找用户
         search_result = pyautogui.locateCenterOnScreen('./stepPic/search_result.png', confidence=0.9)
