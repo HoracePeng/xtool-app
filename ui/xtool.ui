@@ -51,22 +51,6 @@
       </column>
      </widget>
     </item>
-    <item>
-     <widget class="QWidget" name="inviteWidget" native="true">
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
-       <item>
-        <widget class="QLabel" name="inviteLabel">
-         <property name="text">
-          <string>邀请语:</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLineEdit" name="inviteContent"/>
-       </item>
-      </layout>
-     </widget>
-    </item>
     <item alignment="Qt::AlignLeft">
      <widget class="QWidget" name="widget" native="true">
       <layout class="QHBoxLayout" name="horizontalLayout">
