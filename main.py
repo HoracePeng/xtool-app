@@ -128,15 +128,25 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         pyautogui.click(input_tel_icon)
         pyautogui.typewrite(phone, interval=0.05)
         pyautogui.keyDown('enter')
-        time.sleep(1)
+        # 因为的网络请求，所以这里不能保证返回时间，需要设置一个重试机制
+        retry = 5
         # 查找用户
-        search_result = pyautogui.locateCenterOnScreen('./stepPic/search_result.png', confidence=0.9)
-        if not search_result:
-            not_found_user = pyautogui.locateCenterOnScreen('./stepPic/not_found_user.png', confidence=0.9)
-            if not_found_user:
-                confirm_not_found_user = pyautogui.locateCenterOnScreen('./stepPic/confirm_not_user.png', confidence=0.9)
-                pyautogui.click(confirm_not_found_user)
-                return PhoneState.Failed
+        while retry > 0:
+            time.sleep(1)
+            retry = retry - 1
+            search_result = pyautogui.locateCenterOnScreen('./stepPic/search_result.png', confidence=0.9)
+            if not search_result:
+                not_found_user = pyautogui.locateCenterOnScreen('./stepPic/not_found_user.png', confidence=0.9)
+                if not_found_user:
+                    confirm_not_found_user = pyautogui.locateCenterOnScreen('./stepPic/confirm_not_user.png', confidence=0.9)
+                    pyautogui.click(confirm_not_found_user)
+                    return PhoneState.Failed
+                else:
+                    if retry == 0:
+                        raise RuntimeError("查找用户超时")
+            else:
+                break
+
         # 处理已添加 和 未添加
         add = pyautogui.locateCenterOnScreen('./stepPic/add.png')
         if not add:
@@ -146,12 +156,11 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
             else:
                 raise RuntimeError("未知错误")
         pyautogui.click(add)
-        time.sleep(2)
         send = pyautogui.locateCenterOnScreen('./stepPic/send.png', confidence=0.9)
         if not send:
             raise RuntimeError("未找到发送按钮")
         pyautogui.click(send)
-        time.sleep(2)
+        time.sleep(1)
         return PhoneState.Succeed
 
 def main():
