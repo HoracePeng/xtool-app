@@ -3,14 +3,14 @@ import platform
 import re
 import time
 from enum import Enum
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
+from PySide2.QtWidgets import *
+from PySide2.QtGui import *
 from xtool import Ui_MainWindow
 import pyautogui
 
 if platform.system() == "Windows":
     import ctypes
-    ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("myappid")
+    ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("wxtool")
 
 
 # 号码状态
@@ -101,6 +101,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
                 continue
             try:
                 state = self.add_friend(friend_info["phone"])
+                friend_info["state"] = state
             except RuntimeError as e:
                 QMessageBox.warning(self, "错误", str(e))
                 return
@@ -132,7 +133,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         retry = 5
         # 查找用户
         while retry > 0:
-            time.sleep(1)
+            time.sleep(0.5)
             retry = retry - 1
             search_result = pyautogui.locateCenterOnScreen('./stepPic/search_result.png', confidence=0.9)
             if not search_result:
@@ -156,11 +157,23 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
             else:
                 raise RuntimeError("未知错误")
         pyautogui.click(add)
-        send = pyautogui.locateCenterOnScreen('./stepPic/send.png', confidence=0.9)
-        if not send:
-            raise RuntimeError("未找到发送按钮")
-        pyautogui.click(send)
-        time.sleep(1)
+        send_retry = 5
+        while send_retry > 0:
+            time.sleep(0.5)
+            send_retry = send_retry - 1
+            send = pyautogui.locateCenterOnScreen('./stepPic/send.png', confidence=0.9)
+            if send:
+                pyautogui.click(send)
+                break
+            elif send_retry == 0:
+                raise RuntimeError("未找到发送按钮")
+        send_result_retry = 5
+        while send_result_retry > 0:
+            time.sleep(0.5)
+            send_result_retry = send_result_retry - 1
+            send_result = pyautogui.locateCenterOnScreen('./stepPic/send_result.png', confidence=0.9)
+            if send_result:
+                break
         return PhoneState.Succeed
 
 def main():
